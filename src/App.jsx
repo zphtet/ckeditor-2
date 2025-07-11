@@ -89,7 +89,11 @@ export default function App() {
   const [isReadOnly, setIsReadOnly] = useState(false);
   const cloud = useCKEditorCloud({ version: "46.0.0" });
 
+  // Update the variables state structure to store values
   const [variables, setVariables] = useState({});
+  const [variableValues, setVariableValues] = useState({});
+
+  const [count, setCount] = useState(0);
 
   // const [e, setE] = useState(null)
 
@@ -104,26 +108,27 @@ export default function App() {
   // }, [editor]);
 
 
+  // I can access the nodes, but why can't I listen to the event when editing the text?
+  // In contenteditable elements (like your spans), the 'input' event does not always fire reliably across all browsers,
+  // especially when the element is inside a rich text editor like CKEditor, which manages its own DOM and events.
+  // CKEditor may intercept or virtualize editing, so native DOM events like 'input' or 'change' on the span may not fire as expected.
+  // Instead, you should use CKEditor's own event system (like the onChange prop or editor.model/document events) to listen for changes.
+  // For demonstration, here's what happens with direct DOM event listeners:
+
   useEffect(() => {
-	// const editableSpans = document.querySelectorAll(
-	// 	'[data-variable]'
-	//   );
+    const editableSpans = document.querySelectorAll('.variable-placeholder');
+    console.log("editableSpans use effect", editableSpans, "Have a nice day");
 
-	//   console.log("editableSpans", editableSpans);
+    const customer_names = document.querySelectorAll('[data-variable="customer_name"]');
+    console.log("Customernames", customer_names, "Have a nice day");
 
-	//   editableSpans.forEach((span) => {
-	// 	span.addEventListener("input", (event) => {
-	// 	  console.log("it is working");
-	// 	  const target = event.currentTarget;
-	// 	  const variable = target.getAttribute("data-variable");
-	// 	  const newText = target.innerText;
+    if (customer_names[0]) {
+        console.log("Cusomer name", customer_names[0].textContent)
+    }
 
-	// 	  console.log(
-	// 		`Span changed! data-variable="${variable}", newText="${newText}"`
-	// 	  );
-	// 	});
-	//   });
-  }, []);
+    // If you want to listen to changes, use CKEditor's onChange or model/document events instead.
+    // Native DOM events may not work as expected inside CKEditor.
+  }, [editor , count]);
 
   useEffect(() => {
     setIsLayoutReady(true);
@@ -364,7 +369,7 @@ export default function App() {
 
   return (
     <div className="main-container">
-      <pre>{JSON.stringify(variables, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(variables, null, 2)}</pre> */}
       <div
         className="editor-container editor-container_document-editor editor-container_include-word-count"
         ref={editorContainerRef}
@@ -419,7 +424,14 @@ export default function App() {
                         "Have a nice day"
                       );
 
-                      // INSERT_YOUR_CODE
+                      // Initialize variable values with default values
+                      const initialValues = {};
+                      variableNodes.forEach((node) => {
+                        const varName = node.getAttribute("data-variable");
+                        initialValues[varName] = varName; // Set default value to the variable name
+                      });
+                      setVariableValues(initialValues);
+
                       // Group nodes by their data-variable value
                       const variableGroups = {};
                       variableNodes.forEach((node) => {
@@ -490,77 +502,34 @@ export default function App() {
                     onChange={(event, editor) => {
                       const data = editor.getData();
 
-                      // let name;
-                      // let value ;
+                      // setCount(count + 1)
 
-                      // 	const variableObserver = new MutationObserver((mutationsList) => {
-                      // 		for (const mutation of mutationsList) {
-                      // 			if (
-                      // 				mutation.type === "characterData" || mutation.type === "childList" &&
-                      // 				mutation.target.parentElement &&
-                      // 				mutation.target.parentElement.hasAttribute("data-variable")
-                      // 			) {
-                      // 				const varName = mutation.target.parentElement.getAttribute("data-variable");
-                      // 				const newValue = mutation.target.data;
+                      // Get all variable spans from the editor
+                      const editorElement = editor.ui.view.editable.element;
+                      const variableSpans = editorElement.querySelectorAll('[data-variable]');
 
-                      // 				name = varName;
-                      // 				value = newValue;
+                      console.log("onchange variableSpans", variableSpans);
 
-                      // 				const allnodes = document.querySelectorAll(`[data-variable="customer_name"]`)
-                      // 				console.log("ALL NODES", allnodes)
-
-                      // 				allnodes.forEach((node) => {
-                      // 					node.innerText = "JHON DOE"
-                      // 				});
-                      // 				// // Update all nodes that have the same variable to the new value
-                      // 				// allnodes.forEach((node) => {
-                      // 				// 	node.innerText = newValue;
-                      // 				// });
-                      // 				// document.querySelectorAll(`[data-variable="${varName}"]`).forEach((node) => {
-                      // 				// 	console.log("UPDATING TO EACH NODE", node)
-                      // 				// 	node.textContent = newValue.toString();
-                      // 				// });
-
-                      // 				// console.log(`Updated all nodes with variable "${varName}" to "${newValue}". Have a nice day`);
-                      // 				// console.log("ALL NODES", allnodes)
-                      // 				console.log(`Variable "${varName}" changed to "${newValue}". Have a nice day`);
-                      // 			}
-                      // 		}
-                      // 	});
-
-                      // 	// Observe all elements with data-variable attribute
-                      // 	const variableNodes = document.querySelectorAll('[data-variable]');
-                      // 	variableNodes.forEach(node => {
-                      // 		// Observe the text node child (if any)
-                      // 		if (node.firstChild) {
-                      // 			variableObserver.observe(node.firstChild, { characterData: true, subtree: true });
-                      // 		}
-                      // 	});
-
-                      // 	if(name){
-                      // 		  document.querySelectorAll(`[data-variable="${name}"]`).forEach((node) => {
-                      // 			node.innerText = value;
-                      // 		  })
-                      // 	}
-
-                    //   const editableSpans = document.querySelectorAll(
-                    //     '[contenteditable="true"][data-variable]'
-                    //   );
-
-                    //   console.log("editableSpans", editableSpans);
-
-                    //   editableSpans.forEach((span) => {
-                    //     span.addEventListener("input", (event) => {
-                    //       console.log("it is working");
-                    //       const target = event.currentTarget;
-                    //       const variable = target.getAttribute("data-variable");
-                    //       const newText = target.innerText;
-
-                    //       console.log(
-                    //         `Span changed! data-variable="${variable}", newText="${newText}"`
-                    //       );
-                    //     });
-                    //   });
+                      // Process all spans to find any changes
+                      Array.from(variableSpans).forEach(span => {
+                        const varName = span.getAttribute('data-variable');
+                        const currentValue = span.textContent.trim();
+                        
+                        // If this instance has been changed
+                        if (currentValue !== variableValues[varName]) {
+                          // Update state with the new value
+                          setVariableValues(prev => ({
+                            ...prev,
+                            [varName]: currentValue
+                          }));
+                          
+                          // Update all other instances to match
+                          const allInstances = editorElement.querySelectorAll(`[data-variable="${varName}"]`);
+                          allInstances.forEach(instance => {
+                            instance.textContent = currentValue;
+                          });
+                        }
+                      });
                     }}
                     editor={DecoupledEditor}
                     config={{
