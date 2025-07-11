@@ -10,7 +10,7 @@ import { Button } from 'antd';
 
 import "./App.css";
 // import TemplateText from "./fun";
-import TemplateText, { replaceMarkersWithEditableDiv } from "./fun";
+// import TemplateText, { replaceMarkersWithEditableDiv } from "./fun";
 
 /**
  * This is a 24-hour evaluation key. Create a free account to use CDN: https://portal.ckeditor.com/checkout?plan=free
