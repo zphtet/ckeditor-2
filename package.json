@@ -14,7 +14,7 @@
     "vite": "^6.3.3"
   },
   "dependencies": {
-    "antd": "^5.26.4",
-    "react-html-parser": "^2.0.2"
+    "antd": "^5.26.4"
+   
   }
 }
