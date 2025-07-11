@@ -6,8 +6,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 import { transformToCkeditorVariables } from "./uilt";
+import { Button } from 'antd';
 
 import "./App.css";
+// import TemplateText from "./fun";
 
 /**
  * This is a 24-hour evaluation key. Create a free account to use CDN: https://portal.ckeditor.com/checkout?plan=free
@@ -30,6 +32,8 @@ const htmlEncodedStr = `
 
 let editorInitialData = `${transformToCkeditorVariables(htmlEncodedStr)}`;
 console.log("Initial Data for CKEditor:", editorInitialData);
+
+
 
 editorInitialData = `<p>Dear <span class="variable-placeholder" 
       contenteditable="true" 
@@ -76,6 +80,17 @@ editorInitialData = `<p>Dear <span class="variable-placeholder"
     </span>,</p>
 	`;
 
+  const handleUpdate = (updateData) => {
+    console.log("Update data:", updateData);
+  };
+
+//   editorInitialData = <TemplateText 
+//   className="editable-field"
+//   onUpdateCallback={handleUpdate}
+// >
+//   {htmlEncodedStr}
+// </TemplateText>
+
 console.log("Editor Initial Data Type:", typeof editorInitialData);
 
 export default function App() {
@@ -90,7 +105,7 @@ export default function App() {
   const cloud = useCKEditorCloud({ version: "46.0.0" });
 
   // Update the variables state structure to store values
-  const [variables, setVariables] = useState({});
+  // const [variables, setVariables] = useState({});
   const [variableValues, setVariableValues] = useState({});
 
   const [count, setCount] = useState(0);
@@ -116,15 +131,15 @@ export default function App() {
   // For demonstration, here's what happens with direct DOM event listeners:
 
   useEffect(() => {
-    const editableSpans = document.querySelectorAll('.variable-placeholder');
-    console.log("editableSpans use effect", editableSpans, "Have a nice day");
+    // const editableSpans = document.querySelectorAll('.variable-placeholder');
+    // console.log("editableSpans use effect", editableSpans, "Have a nice day");
 
-    const customer_names = document.querySelectorAll('[data-variable="customer_name"]');
-    console.log("Customernames", customer_names, "Have a nice day");
+    // const customer_names = document.querySelectorAll('[data-variable="customer_name"]');
+    // console.log("Customernames", customer_names, "Have a nice day");
 
-    if (customer_names[0]) {
-        console.log("Cusomer name", customer_names[0].textContent)
-    }
+    // if (customer_names[0]) {
+    //     console.log("Cusomer name", customer_names[0].textContent)
+    // }
 
     // If you want to listen to changes, use CKEditor's onChange or model/document events instead.
     // Native DOM events may not work as expected inside CKEditor.
@@ -375,7 +390,10 @@ export default function App() {
         ref={editorContainerRef}
       >
         <div className="editor-container__menu-bar" ref={editorMenuBarRef}>
-          <button
+          <Button onClick={toggleReadOnly} variant={isReadOnly ? "filled" :"primary"}>
+          {isReadOnly ? "Enable Editing" : "Read Only"}
+          </Button>
+          {/* <button
             onClick={toggleReadOnly}
             style={{
               padding: "8px 16px",
@@ -388,7 +406,7 @@ export default function App() {
             }}
           >
             {isReadOnly ? "Enable Editing" : "Read Only"}
-          </button>
+          </button> */}
         </div>
         <div className="editor-container__toolbar" ref={editorToolbarRef}></div>
         <div className="editor-container__editor-wrapper">
@@ -412,51 +430,67 @@ export default function App() {
                         editor.ui.view.menuBarView.element
                       );
 
+
+
+
+
+                      // selective readonly
+                      // editor.model.document.on( 'change:isReadOnly', () => {
+                      //   const selection = editor.model.document.selection;
+                      //   const selectedElement = selection.getSelectedElement();
+                      
+                      //   if (selectedElement && selectedElement.hasClass('variable-placeholder')) {
+                      //     editor.isReadOnly = false;
+                      //   } else {
+                      //     editor.isReadOnly = true;
+                      //   }
+                      // });
+
                       // I will get the variables
 
-                      const variableNodes =
-                        editor.ui.view.editable.element.querySelectorAll(
-                          "[data-variable]"
-                        );
-                      console.log(
-                        "DOM nodes with data-variable attribute:",
-                        variableNodes,
-                        "Have a nice day"
-                      );
+                      // const variableNodes =
+                      //   editor.ui.view.editable.element.querySelectorAll(
+                      //     "[data-variable]"
+                      //   );
+                      // console.log(
+                      //   "DOM nodes with data-variable attribute:",
+                      //   variableNodes,
+                      //   "Have a nice day"
+                      // );
 
-                      // Initialize variable values with default values
-                      const initialValues = {};
-                      variableNodes.forEach((node) => {
-                        const varName = node.getAttribute("data-variable");
-                        initialValues[varName] = varName; // Set default value to the variable name
-                      });
-                      setVariableValues(initialValues);
+                      // // Initialize variable values with default values
+                      // const initialValues = {};
+                      // variableNodes.forEach((node) => {
+                      //   const varName = node.getAttribute("data-variable");
+                      //   initialValues[varName] = varName; // Set default value to the variable name
+                      // });
+                      // setVariableValues(initialValues);
 
-                      // Group nodes by their data-variable value
-                      const variableGroups = {};
-                      variableNodes.forEach((node) => {
-                        const varName = node.getAttribute("data-variable");
-                        if (!variableGroups[varName]) {
-                          variableGroups[varName] = [];
-                        }
-                        variableGroups[varName].push(node);
-                      });
-                      console.log(
-                        "Grouped variable nodes by data-variable:",
-                        variableGroups,
-                        "Have a nice day"
-                      );
+                      // // Group nodes by their data-variable value
+                      // const variableGroups = {};
+                      // variableNodes.forEach((node) => {
+                      //   const varName = node.getAttribute("data-variable");
+                      //   if (!variableGroups[varName]) {
+                      //     variableGroups[varName] = [];
+                      //   }
+                      //   variableGroups[varName].push(node);
+                      // });
+                      // console.log(
+                      //   "Grouped variable nodes by data-variable:",
+                      //   variableGroups,
+                      //   "Have a nice day"
+                      // );
 
-                      setVariables(variableGroups);
+                      // setVariables(variableGroups);
 
-                      // INSERT_YOUR_CODE
-                      // Get variable keys as array
-                      const variableKeys = Object.keys(variableGroups);
-                      console.log(
-                        "Variable keys as array:",
-                        variableKeys,
-                        "Have a nice day"
-                      );
+                      // // INSERT_YOUR_CODE
+                      // // Get variable keys as array
+                      // const variableKeys = Object.keys(variableGroups);
+                      // console.log(
+                      //   "Variable keys as array:",
+                      //   variableKeys,
+                      //   "Have a nice day"
+                      // );
 
                       // INSERT_YOUR_CODE
                       // Change innerText of element(s) with data-variable="customer_name"
@@ -527,6 +561,8 @@ export default function App() {
                           const allInstances = editorElement.querySelectorAll(`[data-variable="${varName}"]`);
                           allInstances.forEach(instance => {
                             instance.textContent = currentValue;
+                            instance.nodeValue = currentValue
+                            instance.innerHTML = currentValue
                           });
                         }
                       });
