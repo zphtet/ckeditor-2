@@ -25,7 +25,7 @@ export function replaceMarkersWithEditableDiv(htmlEncodedStr, className, startMa
     const escapedEndMarker = endMarker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     // Construct the regular expression dynamically
-    const regex = new RegExp(${escapedStartMarker}\\$(.+?)${escapedEndMarker}, 'g');
+    const regex = new RegExp(`${escapedStartMarker}(.+?)${escapedEndMarker}`, 'g');
 
     let divCounter = 0; // To generate unique IDs for each editable div
 
@@ -35,10 +35,10 @@ export function replaceMarkersWithEditableDiv(htmlEncodedStr, className, startMa
     const processedHtml = decoded.replace(regex, (match, p1) => {
         const safeContent = encodeHtml(p1); // Ensure content inside the div is HTML-safe
         // Generate a unique ID for each editable div. This is crucial for later selection.
-        const uniqueId = editable-marker-${Date.now()}-${divCounter++}; 
+        const uniqueId = `editable-marker-${Date.now()}-${divCounter++}`;
 
         if (className) {
-            return <div contenteditable="true" class="${className}" data-marker="${safeContent}" data-editable-id="${uniqueId}">${safeContent}</div>;
+            return `<div contenteditable="true" class="${className}" data-marker="${safeContent}" data-editable-id="${uniqueId}">${safeContent}</div>`;
         } else {
             return <div contenteditable="true" style="${defaultStyle}" data-marker="${safeContent}" data-editable-id="${uniqueId}">${safeContent}</div>;
         }
@@ -143,7 +143,7 @@ const TemplateText = ({
         <div
             ref={containerRef}
             className="font-inter"
-            data-name={}
+            data-name={name}
         >
             {ReactHtmlParser(processedHtml)}
         </div>

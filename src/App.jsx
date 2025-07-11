@@ -10,6 +10,7 @@ import { Button } from 'antd';
 
 import "./App.css";
 // import TemplateText from "./fun";
+import TemplateText, { replaceMarkersWithEditableDiv } from "./fun";
 
 /**
  * This is a 24-hour evaluation key. Create a free account to use CDN: https://portal.ckeditor.com/checkout?plan=free
@@ -22,12 +23,14 @@ let initialData =
 
 const htmlEncodedStr = `
 	<p>Dear &lt;&lt;customer_name&gt;&gt;,</p>
+  	<p>Dear &lt;&lt;customer_name&gt;&gt;,</p>
 	<p>Thank you for your purchase on &lt;&lt;purchase_date&gt;&gt;.</p>
 	<p>Your order number is <b>&lt;&lt;order_id&gt;&gt;</b>.</p>
 	<p>Total amount: $&lt;&lt;order_total&gt;&gt; USD</p>
 	<p>Shipping address: &lt;&lt;shipping_address&gt;&gt;</p>
 	<p>We hope to see you again soon!</p>
 	<p>Best regards,<br/> &lt;&lt;company_name&gt;&gt; team</p>
+  <p>Hello &lt;&lt;customer_name&gt;&gt;,</p>
 	`;
 
 let editorInitialData = `${transformToCkeditorVariables(htmlEncodedStr)}`;
@@ -84,12 +87,7 @@ editorInitialData = `<p>Dear <span class="variable-placeholder"
     console.log("Update data:", updateData);
   };
 
-//   editorInitialData = <TemplateText 
-//   className="editable-field"
-//   onUpdateCallback={handleUpdate}
-// >
-//   {htmlEncodedStr}
-// </TemplateText>
+  // editorInitialData = replaceMarkersWithEditableDiv(htmlEncodedStr, "variable-placeholder", "<<", ">>");
 
 console.log("Editor Initial Data Type:", typeof editorInitialData);
 
