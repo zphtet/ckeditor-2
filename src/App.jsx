@@ -545,7 +545,8 @@ export default function App() {
                       // Process all spans to find any changes
                       Array.from(variableSpans).forEach(span => {
                         const varName = span.getAttribute('data-variable');
-                        const currentValue = span.textContent.trim();
+                        const currentValue = span.textContent.trim
+                        ();
                         
                         // If this instance has been changed
                         if (currentValue !== variableValues[varName]) {
